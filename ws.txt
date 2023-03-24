@@ -1,0 +1,52 @@
+Teorico: 22 março e 24 maio
+Prático: 29 março
+
+Trabalho pratico:
+
+Admin:
+- bilhetes para corridas
+    - corridas 
+    - pilotos e equipas
+
+- sessoes com pilotos
+- marchandising das equipas
+
+User:
+    - seguir corrida ou comprar bilhete
+    - marcar equipas como favoritas
+
+-------------------------------------------------------------------------------------------
+
+Use Cases:
+
+Admin:
+    - adicionar equipa
+    - adicionar piloto
+    - criar corrida
+    - adicionar pilotos a corrida
+    . visualizar todos os pilotos
+    - visualizar todas as corridas
+    - visualizar a receita atual de uma corrida
+
+User:
+    - visualizar calendario de corridas
+    - visualizar a qualificação atual
+    - comprar bilhete para corrida
+    - marcar equipa como favorita (o que acontece???)
+        - equipa favorita e jogador favorito
+        - notificação no fim das corridas sobre essa equipa (a pensar)
+
+
+2.0
+Admin:
+    - adicionar marchandising à equipa
+    - visualizar a receita do marchandising
+    
+    - cria sessoes privadas com os pilotos
+    - visualiza a receitadas sessoes
+
+User:
+    - compra marchandising
+    - recebe notificações do estado da corrida
+
+    - increve-se em sessão privada
