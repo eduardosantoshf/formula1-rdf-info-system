@@ -23,4 +23,12 @@ res = accessor.sparql_select(body={"query": query}, repo_name=repo)
 
 print(res)
 
+update = """
+    INSERT DATA { <http://movies.org/en/bad_taste> <http://movies.org/pred/starring> <http://movies.org/guid/9202a8c04000641f80000000010cf900> . }
+"""
+
+res2 = accessor.sparql_update(body={"update": update}, repo_name=repo)
+
+print(res2)
+
 
