@@ -35,11 +35,25 @@ User:
     - marcar equipa como favorita (o que acontece???)
         - equipa favorita e jogador favorito
         - notificação no fim das corridas sobre essa equipa (a pensar)
+    - pesquisar por piloto
+    - pesquisar por equipa
+
+Pesquisas / Inferências:
+    - pilotos mais/menos experientes - e.g. mais experientes estão na F1 há 2+ anos
+    - pesquisar pistas onde um certo piloto tem melhores/piores resultados
+    - pilotos que mais vezes ganharam o campeonato de drivers
+    - equipas que mais vezes ganharam o campeonato de construtores
+    - equipas por quais piloto passou 
+    - piotos cujos carros foram retired + vezes (dado por status do piloto na corrida)
+    - pilotos que mais vezes chegaram à Q1 na qualificatória
+    - pilotos que foram apanhados num grande número de acidentes (2+ ou 3+)
+    - pilotos que mais vezes trocaram de equipa (?)
+    
 
 
 2.0
 Admin:
-    - adicionar marchandising à equipa
+    - adicionar merchandising à equipa
     - visualizar a receita do marchandising
     
     - cria sessoes privadas com os pilotos
