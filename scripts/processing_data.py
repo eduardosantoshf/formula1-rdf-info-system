@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @Author: Eduardo Santos
+# @Date:   2023-03-25 19:38:14
+# @Last Modified by:   Eduardo Santos
+# @Last Modified time: 2023-03-25 23:46:40
 import re
 import csv
 import random
@@ -34,12 +39,15 @@ with open('../datasets/status.csv', 'r') as file:
         status_dict[row[0]] = row[1]
 
 base_rdf_list = ["http://f1"]
-base_driver_rdf_list =["http://f1/driver"]
+base_driver_rdf_list = ["http://f1/driver"]
+base_team_rdf_list = ["http://f1/team"]
 
 driver_triples = set()
+team_triples = set()
 race_triples = set()
 driver_standing_triples = set()
 driver_final_standing_triples = set()
+team_final_standing_triples = set()
 
 driver_id = ""
 with open('../datasets/results.csv', 'r') as file:
@@ -72,7 +80,7 @@ with open('../datasets/results.csv', 'r') as file:
 
             processed_races.append(r_id)
 
-        # Drives
+        # Drivers
         d_id = row[2]
         driver_id = "<{}/driver_id/{}>".format(chosen_base_rdf, d_id)
         if d_id not in processed_drivers:
@@ -153,9 +161,74 @@ with open('../datasets/driver_final_standings.csv', 'r') as file:
         driver_final_standing_position = "\"{}\"".format(row[4])
         driver_final_standing_triples.add("{} {} {} .".format(driver_final_standing_id, driver_final_standing_position_pred, driver_final_standing_position))
 
+        # BUG: isto assim fica com o mesmo id sempre, que foi o último a ser lido do ficheiro anterior, ver se linha abaixo resolve
+        driver_id = "<{}/driver_id/{}>".format(chosen_base_rdf, row[2])
         driver_final_standing_pred = "<{}/pred/finished_in>".format(chosen_base_rdf)
         driver_triples.add("{} {} {} .".format(driver_id, driver_final_standing_pred, driver_final_standing_id))
 
 
     #for i in driver_triples:
     #   print(i)
+
+teams_dict = {}
+with open("../datasets/teams.csv") as file:
+    # ignore headers
+    file.readline()
+
+    reader = csv.reader(file)
+
+    for row in reader:
+        t_id = row[0]
+        row.pop(0)
+        teams_dict[t_id] = row
+
+        chosen_base_rdf = random.choice(base_rdf_list)
+
+        # Teams
+        team_id = "<{}/team_id/{}>".format(chosen_base_rdf, t_id)
+
+        team_info = teams_dict[t_id]
+
+        team_code_pred = "<{}/pred/name>".format(chosen_base_rdf)
+        team_name = "\"{}\"".format(team_info[1])
+        team_triples.add("{} {} {} .".format(team_id, team_code_pred, team_name))
+
+        team_code_pred = "<{}/pred/nationality>".format(chosen_base_rdf)
+        team_nationality = "\"{}\"".format(team_info[2])
+        team_triples.add("{} {} {} .".format(team_id, team_code_pred, team_nationality))
+
+
+    #for i in team_triples:
+    #   print(i)
+
+with open("../datasets/team_final_standings.csv") as file:
+    file.readline()
+    reader = csv.reader(file)
+
+    for row in reader:
+        chosen_base_rdf = random.choice(base_rdf_list)
+
+        team_final_standing_id = "<{}/team_id/final_standing/{}>".format(chosen_base_rdf, row[0])
+
+        team_final_standing_season_pred = "<{}/pred/season>".format(chosen_base_rdf)
+        team_final_standing_season = "\"{}\"".format(races_dict[row[1]][0])
+        team_final_standing_triples.add("{} {} {} .".format(team_final_standing_id, team_final_standing_season_pred, team_final_standing_season))
+
+        team_final_standing_position_pred = "<{}/pred/position>".format(chosen_base_rdf)
+        team_final_standing_position = "\"{}\"".format(row[4])
+        team_final_standing_triples.add("{} {} {} .".format(team_final_standing_id, team_final_standing_position_pred, team_final_standing_position))
+
+        team_final_standing_points_pred = "<{}/pred/position>".format(chosen_base_rdf)
+        team_final_standing_points = "\"{}\"".format(row[3])
+        team_final_standing_triples.add("{} {} {} .".format(team_final_standing_id, team_final_standing_points_pred, team_final_standing_points))
+
+        #TODO: this
+        team_id = "<{}/team_id/{}>".format(chosen_base_rdf, row[2])
+        team_final_standing_pred = "<{}/pred/finished_in>".format(chosen_base_rdf)
+        team_triples.add("{} {} {} .".format(team_id, team_final_standing_pred, team_final_standing_id))
+
+    for i in team_final_standing_triples:
+        print(i)
+
+    for i in team_triples:
+        print(i)
