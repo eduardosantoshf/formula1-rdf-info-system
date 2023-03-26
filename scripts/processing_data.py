@@ -2,7 +2,7 @@
 # @Author: Eduardo Santos
 # @Date:   2023-03-25 19:38:14
 # @Last Modified by:   Eduardo Santos
-# @Last Modified time: 2023-03-26 18:24:27
+# @Last Modified time: 2023-03-26 18:53:21
 
 import csv
 
@@ -51,12 +51,15 @@ with open('../datasets/races.csv', 'r') as file:
 
         season = row[0]
         season_base_rdf = "<{}/season".format(base_rdf)
-        season_id = "{}/id/{}>".format(season_base_rdf, race_id)
+        
         if season not in processed_seasons:
+            season_id = "{}/id/{}>".format(season_base_rdf, race_id)
             season_year_pred = "{}/pred/year>".format(season_base_rdf)
             season_year = "\"{}\"".format(season)
             season_triples.add("{} {} {} .".format(season_id, season_year_pred, season_year))
+            processed_seasons.append(season)
 
+        print(season_id)
         row.append(season_id)
         races_dict[race_id] = row
 
