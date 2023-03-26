@@ -221,7 +221,7 @@ with open('../datasets/results.csv', 'r') as file:
         season_triples.add("{} {} {} .".format(season_id, season_driver_pred, driver_id))
 
         # Team - Season
-        team_id = row[3]
+        team_id = "{}/id/{}>".format(team_base_rdf, row[3])
         team_season_pred = "{}/pred/participated_in>".format(team_base_rdf)
         team_triples.add("{} {} {} .".format(team_id, team_season_pred, season_id))
 
