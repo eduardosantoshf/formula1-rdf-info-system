@@ -2,10 +2,9 @@
 # @Author: Eduardo Santos
 # @Date:   2023-03-25 19:38:14
 # @Last Modified by:   Eduardo Santos
-# @Last Modified time: 2023-03-25 23:46:40
-import re
+# @Last Modified time: 2023-03-26 18:24:27
+
 import csv
-import random
 
 base_rdf = "http://f1"
 
@@ -16,6 +15,16 @@ race_triples = set()
 driver_standing_triples = set()
 driver_final_standing_triples = set()
 team_final_standing_triples = set()
+
+triples = [
+    season_triples,
+    driver_triples,
+    team_triples,
+    race_triples,
+    driver_standing_triples,
+    driver_final_standing_triples,
+    team_final_standing_triples
+]
 
 ### Load drivers
 drivers_dict = {}
@@ -242,8 +251,17 @@ with open('../datasets/driver_final_standings.csv', 'r') as file:
         driver_final_standing_pred = "{}/pred/finished_in>".format(driver_base_rdf)
         driver_triples.add("{} {} {} .".format(driver_id, driver_final_standing_pred, driver_final_standing_id))
 
-    for i in driver_standing_triples:
-        print(i)
+    #for i in driver_standing_triples:
+    #    print(i)
 
     #for i in team_triples:
     #    print(i)
+
+f1_set = set()
+for triple in triples:
+    for t in triple: 
+        f1_set.add(t)
+# save triples on .nt file
+with open("../datasets/f1.nt", "w") as output_file:
+    for s in f1_set:
+        output_file.write("{}\n".format(s))
