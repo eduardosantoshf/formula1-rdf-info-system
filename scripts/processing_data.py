@@ -59,7 +59,7 @@ with open('../datasets/races.csv', 'r') as file:
             season_triples.add("{} {} {} .".format(season_id, season_year_pred, season_year))
             processed_seasons.append(season)
 
-        print(season_id)
+
         row.append(season_id)
         races_dict[race_id] = row
 
@@ -221,6 +221,7 @@ with open('../datasets/results.csv', 'r') as file:
         season_triples.add("{} {} {} .".format(season_id, season_driver_pred, driver_id))
 
         # Team - Season
+        team_id = row[3]
         team_season_pred = "{}/pred/participated_in>".format(team_base_rdf)
         team_triples.add("{} {} {} .".format(team_id, team_season_pred, season_id))
 
