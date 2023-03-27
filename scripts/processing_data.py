@@ -2,13 +2,13 @@
 # @Author: Eduardo Santos
 # @Date:   2023-03-25 19:38:14
 # @Last Modified by:   Eduardo Santos
-# @Last Modified time: 2023-03-26 18:53:21
+# @Last Modified time: 2023-03-27 17:47:29
 
 import csv
 
 base_rdf = "http://f1"
 
-season_triples = set()
+contract_triples = set()
 driver_triples = set()
 team_triples = set()
 race_triples = set()
@@ -17,7 +17,7 @@ driver_final_standing_triples = set()
 team_final_standing_triples = set()
 
 triples = [
-    season_triples,
+    contract_triples,
     driver_triples,
     team_triples,
     race_triples,
@@ -37,30 +37,18 @@ with open('../datasets/drivers.csv', 'r') as file:
         row.pop(0)
         drivers_dict[driver_id] = row
 
-### Load races and create Season entities
+### Load races and create Contract entities
 races_dict = {}
 with open('../datasets/races.csv', 'r') as file:
     file.readline()
     reader = csv.reader(file)
 
-    processed_seasons = []
+    processed_contracts = []
 
     for row in reader:
         race_id = row[0]
         row.pop(0)
 
-        season = row[0]
-        season_base_rdf = "<{}/season".format(base_rdf)
-        
-        if season not in processed_seasons:
-            season_id = "{}/id/{}>".format(season_base_rdf, race_id)
-            season_year_pred = "{}/pred/year>".format(season_base_rdf)
-            season_year = "\"{}\"".format(season)
-            season_triples.add("{} {} {} .".format(season_id, season_year_pred, season_year))
-            processed_seasons.append(season)
-
-
-        row.append(season_id)
         races_dict[race_id] = row
 
 ### Load status
@@ -131,6 +119,7 @@ with open('../datasets/results.csv', 'r') as file:
 
     processed_races = []
     processed_drivers = []
+    processed_contracts = {}
 
     for row in reader:
         # Races
@@ -211,24 +200,54 @@ with open('../datasets/results.csv', 'r') as file:
         race_round_pred = "{}/pred/has>".format(race_base_rdf)
         race_triples.add("{} {} {} .".format(race_id, race_round_pred, driver_standing_id))
 
-        season_id = races_dict[r_id][3]
-        # Driver - Season
-        driver_season_pred = "{}/pred/drived_on>".format(driver_base_rdf)
-        driver_triples.add("{} {} {} .".format(driver_id, driver_season_pred, season_id))
 
-        # Season - Driver
-        season_driver_pred = "{}/pred/had_driver>".format(season_base_rdf)
-        season_triples.add("{} {} {} .".format(season_id, season_driver_pred, driver_id))
+        # BUG: guardar apenas 1 contract por ano por driver por team
 
-        # Team - Season
-        team_id = "{}/id/{}>".format(team_base_rdf, row[3])
-        team_season_pred = "{}/pred/participated_in>".format(team_base_rdf)
-        team_triples.add("{} {} {} .".format(team_id, team_season_pred, season_id))
+        # Contracts
+        contract_base_rdf = "<{}/contract".format(base_rdf)
 
-        # Season - Team
-        season_team_pred = "{}/pred/had_team>".format(season_base_rdf)
-        season_triples.add("{} {} {} .".format(season_id, season_team_pred, team_id))
+        contract_id = "{}/id/{}>".format(contract_base_rdf, row[0])
 
+        contract_year_pred = "{}/pred/year>".format(contract_base_rdf)
+        contract_year = "\"{}\"".format(races_dict[row[1]])
+        contract_triples.add("{} {} {} .".format(contract_id, contract_year_pred, contract_year))
+
+        contract_driver_pred = "{}/pred/driver>".format(contract_base_rdf)
+        contract_driver = "\"{}\"".format(row[2])
+        contract_triples.add("{} {} {} .".format(contract_id, contract_driver_pred, contract_driver))
+
+        contract_team_pred = "{}/pred/team>".format(contract_base_rdf)
+        contract_team = "\"{}\"".format(row[3])
+        contract_triples.add("{} {} {} .".format(contract_id, contract_team_pred, contract_team))
+
+        if (row[2], row[3]) not in processed_contracts.keys():
+            processed_contracts[(row[2], row[3])] = [races_dict[row[1]][0]]
+        else:
+            if races_dict[row[1]][0] not in processed_contracts[(row[2], row[3])]:
+                processed_contracts[(row[2], row[3])].append(races_dict[row[1]][0])
+
+
+        # TODO: relações Driver - Constructor e Team - Constructor
+        
+        ## Driver - Season
+        #driver_season_pred = "{}/pred/drived_on>".format(driver_base_rdf)
+        #driver_triples.add("{} {} {} .".format(driver_id, driver_season_pred, season_id))
+#
+        #
+        ## Season - Driver
+        #season_driver_pred = "{}/pred/had_driver>".format(season_base_rdf)
+        #season_triples.add("{} {} {} .".format(season_id, season_driver_pred, driver_id))
+#
+        ## Team - Season
+        #team_id = "{}/id/{}>".format(team_base_rdf, row[3])
+        #team_season_pred = "{}/pred/participated_in>".format(team_base_rdf)
+        #team_triples.add("{} {} {} .".format(team_id, team_season_pred, season_id))
+#
+        ## Season - Team
+        #season_team_pred = "{}/pred/had_team>".format(season_base_rdf)
+        #season_triples.add("{} {} {} .".format(season_id, season_team_pred, team_id))
+#
+    print(processed_contracts)
 
 with open('../datasets/driver_final_standings.csv', 'r') as file:
     file.readline()
@@ -261,11 +280,11 @@ with open('../datasets/driver_final_standings.csv', 'r') as file:
     #for i in team_triples:
     #    print(i)
 
-f1_set = set()
-for triple in triples:
-    for t in triple: 
-        f1_set.add(t)
-# save triples on .nt file
-with open("../datasets/f1.nt", "w") as output_file:
-    for s in f1_set:
-        output_file.write("{}\n".format(s))
+#f1_set = set()
+#for triple in triples:
+#    for t in triple: 
+#        f1_set.add(t)
+## save triples on .nt file
+#with open("../datasets/f1.nt", "w") as output_file:
+#    for s in f1_set:
+#        output_file.write("{}\n".format(s))
