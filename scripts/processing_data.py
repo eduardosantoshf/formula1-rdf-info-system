@@ -2,9 +2,10 @@
 # @Author: Eduardo Santos
 # @Date:   2023-03-25 19:38:14
 # @Last Modified by:   Eduardo Santos
-# @Last Modified time: 2023-03-27 17:47:29
+# @Last Modified time: 2023-03-28 17:07:46
 
 import csv
+from pprint import pprint
 
 base_rdf = "http://f1"
 
@@ -146,7 +147,9 @@ with open('../datasets/results.csv', 'r') as file:
         # Drivers
         driver_base_rdf = "<{}/driver".format(base_rdf)
         d_id = row[2]
+        t_id = row[3]
         driver_id = "{}/id/{}>".format(driver_base_rdf, d_id)
+        team_id = "{}/id/{}>".format(team_base_rdf, t_id)
         if d_id not in processed_drivers:
             driver_info = drivers_dict[d_id]
 
@@ -209,7 +212,7 @@ with open('../datasets/results.csv', 'r') as file:
         contract_id = "{}/id/{}>".format(contract_base_rdf, row[0])
 
         contract_year_pred = "{}/pred/year>".format(contract_base_rdf)
-        contract_year = "\"{}\"".format(races_dict[row[1]])
+        contract_year = "\"{}\"".format(races_dict[row[1]][0])
         contract_triples.add("{} {} {} .".format(contract_id, contract_year_pred, contract_year))
 
         contract_driver_pred = "{}/pred/driver>".format(contract_base_rdf)
@@ -222,32 +225,31 @@ with open('../datasets/results.csv', 'r') as file:
 
         if (row[2], row[3]) not in processed_contracts.keys():
             processed_contracts[(row[2], row[3])] = [races_dict[row[1]][0]]
+
+            # Driver - Contract
+            driver_contract_pred = "{}/pred/signed_for>".format(driver_base_rdf)
+            driver_triples.add("{} {} {} .".format(driver_id, driver_contract_pred, contract_id))
+
+            # Team - Contract
+            team_contract_pred = "{}/pred/signed>".format(team_base_rdf)
+            team_triples.add("{} {} {} .".format(team_id, team_contract_pred, contract_id))
         else:
             if races_dict[row[1]][0] not in processed_contracts[(row[2], row[3])]:
                 processed_contracts[(row[2], row[3])].append(races_dict[row[1]][0])
 
+                # Driver - Contract
+                driver_contract_pred = "{}/pred/signed_for>".format(driver_base_rdf)
+                driver_triples.add("{} {} {} .".format(driver_id, driver_contract_pred, contract_id))
 
-        # TODO: relações Driver - Constructor e Team - Constructor
+                # Team - Contract
+                team_contract_pred = "{}/pred/signed>".format(team_base_rdf)
+                team_triples.add("{} {} {} .".format(team_id, team_contract_pred, contract_id))
+
+    #print(processed_contracts)
+
+    #pprint(contract_triples)
+    #pprint(driver_triples)
         
-        ## Driver - Season
-        #driver_season_pred = "{}/pred/drived_on>".format(driver_base_rdf)
-        #driver_triples.add("{} {} {} .".format(driver_id, driver_season_pred, season_id))
-#
-        #
-        ## Season - Driver
-        #season_driver_pred = "{}/pred/had_driver>".format(season_base_rdf)
-        #season_triples.add("{} {} {} .".format(season_id, season_driver_pred, driver_id))
-#
-        ## Team - Season
-        #team_id = "{}/id/{}>".format(team_base_rdf, row[3])
-        #team_season_pred = "{}/pred/participated_in>".format(team_base_rdf)
-        #team_triples.add("{} {} {} .".format(team_id, team_season_pred, season_id))
-#
-        ## Season - Team
-        #season_team_pred = "{}/pred/had_team>".format(season_base_rdf)
-        #season_triples.add("{} {} {} .".format(season_id, season_team_pred, team_id))
-#
-    print(processed_contracts)
 
 with open('../datasets/driver_final_standings.csv', 'r') as file:
     file.readline()
@@ -280,11 +282,11 @@ with open('../datasets/driver_final_standings.csv', 'r') as file:
     #for i in team_triples:
     #    print(i)
 
-#f1_set = set()
-#for triple in triples:
-#    for t in triple: 
-#        f1_set.add(t)
-## save triples on .nt file
-#with open("../datasets/f1.nt", "w") as output_file:
-#    for s in f1_set:
-#        output_file.write("{}\n".format(s))
+f1_set = set()
+for triple in triples:
+    for t in triple: 
+        f1_set.add(t)
+# save triples on .nt file
+with open("../datasets/f1.nt", "w") as output_file:
+    for s in f1_set:
+        output_file.write("{}\n".format(s))
