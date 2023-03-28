@@ -112,69 +112,115 @@ def list_all_pilots():
     Returns
     -------
     list : tuples
-        [(driver_id, forename, surname, nationality)]
+        [(driver_code, forename, surname, nationality, year, team_name)]
     """
 def get_pilots_by_season(season):
 
-    season = str(season)
-
     query = """
     PREFIX driver: <http://f1/driver/pred/> 
-    PREFIX season: <http://f1/season/pred/>
+    PREFIX contract: <http://f1/contract/pred/>
+    PREFIX team: <http://f1/team/pred/>
 
-    SELECT ?driver_id ?forename ?surname ?nationality ?year WHERE
+    SELECT ?code ?forename ?surname ?nationality ?year ?team_name WHERE
     {
-        ?driver_id driver:drived_on ?s.
+        ?driver_id driver:code ?code.
         ?driver_id driver:forename ?forename.
         ?driver_id driver:surname ?surname.
         ?driver_id driver:nationality ?nationality.
-        ?s  season:year ?year.
-        FILTER regex(?year, "SEASON_YEAR" , "i")
+        ?driver_id driver:signed_for ?contract.
+
+        ?contract contract:year ?year.
+        ?contract contract:team ?team.
+
+        ?team_id team:signed ?contract.
+        ?team_id team:name ?team_name.
+
+
+        FILTER regex(?year, "SEASON_YEAR", "i")
+    }
+
+    ORDER BY ASC( ?team_name )
+    
+    """
+    query = query.replace("SEASON_YEAR", str(season))
+    payload_query = {"query": query}
+    response = accessor.sparql_select(body=payload_query, repo_name=repo)
+    print(response)
+    response = json.loads(response)
+
+    if response['results']['bindings']:
+        data = response['results']['bindings']
+        return [(pilot['code']['value'], 
+                 pilot['forename']['value'], 
+                 pilot['surname']['value'], 
+                 pilot['nationality']['value'],
+                 pilot['year']['value'],
+                 pilot['team_name']['value']) for pilot in data]
+    else:
+        return []
+
+
+
+""" Get pilots for a specific team for a specific season 
+
+    Parameters
+    ----------
+    season : int
+        year of the season
+    team : str
+        team name
+
+    Returns
+    -------
+    list : tuples
+        [(driver_code, forename, surname, nationality, year, team_name, team_nationality)]
+    """
+def get_team_pilots_by_season(season, team_name):
+
+    query = """
+    PREFIX driver: <http://f1/driver/pred/> 
+    PREFIX contract: <http://f1/contract/pred/>
+    PREFIX team: <http://f1/team/pred/>
+
+    SELECT ?code ?forename ?surname ?nationality ?year ?team_name ?team_nationality WHERE
+    {
+        ?driver_id driver:code ?code.
+        ?driver_id driver:forename ?forename.
+        ?driver_id driver:surname ?surname.
+        ?driver_id driver:nationality ?nationality.
+        ?driver_id driver:signed_for ?contract.
+
+        ?contract contract:year ?year.
+        ?contract contract:team ?team.
+
+        ?team_id team:signed ?contract.
+        ?team_id team:name ?team_name.
+        ?team_id team:nationality ?team_nationality.
+
+
+        FILTER (regex(?year, "SEASON_YEAR", "i") && regex(?team_name, "TEAM_NAME", "i"))
     }
     
     """
-    query = query.replace("SEASON_YEAR", season)
+    query = query.replace("SEASON_YEAR", str(season))
+    query = query.replace("TEAM_NAME", team_name)
+
     payload_query = {"query": query}
     response = accessor.sparql_select(body=payload_query, repo_name=repo)
-
+    print(response)
     response = json.loads(response)
 
-    data = response['results']['bindings']
-
-    return([(pilot['driver_id']['value'].split('/')[-1], pilot['forename']['value'], pilot['surname']['value'], pilot['nationality']['value']) for pilot in data])
-    
-
-# TODO not working yet
-#def get_pilots_by_season_and_team(season, team):
-#
-#    season = str(season)
-#
-#    query_2 = """
-#    PREFIX team: <http://f1/team/pred/>
-#    PREFIX season: <http://f1/season/pred/>
-#
-#    SELECT ?name ?year WHERE
-#    {
-#        ?t team:name ?name.
-#        ?t team:participated_in ?s.
-#        ?s season:year ?year.
-#        FILTER regex(?year, "SEASON_YEAR", "i")
-#    }
-#    
-#    """
-#
-#    query_2 = query_2.replace("SEASON_YEAR", season)
-#    query_2 = query_2.replace("TEAM_NAME", team)
-#    #print(query)
-#    payload_query = {"query": query_2}
-#    response = accessor.sparql_select(body=payload_query, repo_name=repo)
-#    print(response)
-#    response = json.loads(response)
-#    
-#
-#    data = response['results']['bindings']
-#
-#    return([(pilot['driver_id']['value'].split('/')[-1], pilot['forename']['value'], pilot['surname']['value'], pilot['nationality']['value']) for pilot in data])
+    if response['results']['bindings']:
+        data = response['results']['bindings']
+        return [(pilot['code']['value'], 
+                 pilot['forename']['value'], 
+                 pilot['surname']['value'], 
+                 pilot['nationality']['value'],
+                 pilot['year']['value'],
+                 pilot['team_name']['value'],
+                 pilot['team_nationality']['value']) for pilot in data]
+    else:
+        return []
     
         
 
@@ -183,8 +229,6 @@ def get_pilots_by_season(season):
     
 
 #print(get_pilot_info("Hamilton"))
-#print("\n")
 #print(list_all_pilots())
-#print("\n")
 #print(get_pilots_by_season(2022))
-#print(get_pilots_by_season_and_team(2020, "Mercedes"))
+#print(get_team_pilots_by_season(2022, "Mercedes"))
