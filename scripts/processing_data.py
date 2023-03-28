@@ -2,7 +2,7 @@
 # @Author: Eduardo Santos
 # @Date:   2023-03-25 19:38:14
 # @Last Modified by:   Eduardo Santos
-# @Last Modified time: 2023-03-28 17:07:46
+# @Last Modified time: 2023-03-28 17:48:18
 
 import csv
 from pprint import pprint
@@ -202,9 +202,6 @@ with open('../datasets/results.csv', 'r') as file:
 
         race_round_pred = "{}/pred/has>".format(race_base_rdf)
         race_triples.add("{} {} {} .".format(race_id, race_round_pred, driver_standing_id))
-
-
-        # BUG: guardar apenas 1 contract por ano por driver por team
 
         # Contracts
         contract_base_rdf = "<{}/contract".format(base_rdf)
