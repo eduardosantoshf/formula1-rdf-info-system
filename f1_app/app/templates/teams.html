@@ -1,0 +1,30 @@
+{%  extends "base.html" %}
+
+{% block content %}
+    <!-- Results table -->
+    <header class="py-5 bg-light border-bottom mb-4">
+        <div class="container">
+            <div class="text-center">
+                <h1 class="fw-bolder">Teams</h1>
+            </div>
+        </div>
+    </header><div class="row">
+            {% for i in data %}
+            <div class="card" style="width: 18rem; margin: 2rem;">
+                <img class="card-img-top" src="../static/img/f1.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{ i.0 }}</h5>
+                    <p class="card-text">Nationality: {{ i.1 }}</p>
+                    <p class="card-text"></p>
+                    <p class="card-text">Drivers history:</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Championships won: {{ i.1 }}</li>
+                </ul>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Drivers History;</li>
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+{% endblock %}

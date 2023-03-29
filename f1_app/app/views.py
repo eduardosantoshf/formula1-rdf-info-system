@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from f1_app.queries import races_queries
 from f1_app.queries import standings_queries
+from f1_app.queries import teams_queries
 
 # Create your views here.
 
@@ -53,6 +54,9 @@ def results(request, season):
     return render(request, "results.html", data)
 
 def teams(request):
+    teams = teams_queries.get_all_teams()
+    data = {'data': results}
+    print(data)
     return render(request, "teams.html")
 
 def races(request, season):
