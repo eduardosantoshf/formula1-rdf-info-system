@@ -19,5 +19,6 @@ from django.urls import path
 
 urlpatterns = [
     path('teams', views.teams),
-    path('results/<int:season>', views.results)
+    path('results/<int:season>', views.results),
+    path('races/<int:season>', views.races)
 ]

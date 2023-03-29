@@ -233,14 +233,16 @@ def team_total_championships(name):
     Returns
     -------
     list : tuples
-        [(driver_code, forename, surname, nationality, season, position, points)]
+        [(driver_code, forename, surname, nationality, team_name, position, points)]
     """
 def pilots_season_final_standings(season):
     query = """
     PREFIX driver: <http://f1/driver/pred/> 
     PREFIX driver_final_standings: <http://f1/driver_final_standing/pred/>
+    PREFIX contract: <http://f1/contract/pred/>
+    PREFIX team: <http://f1/team/pred/>
 
-    SELECT ?driver_code ?forename ?surname ?nationality ?season ?position ?points WHERE
+    SELECT ?driver_code ?forename ?surname ?nationality ?team_name ?position ?points WHERE
     {   
         ?driver_id driver:code ?driver_code.
         ?driver_id driver:nationality ?nationality.
@@ -252,7 +254,15 @@ def pilots_season_final_standings(season):
         ?dfs driver_final_standings:position ?position.
         ?dfs driver_final_standings:points ?points.
 
+        ?driver_id driver:signed_for ?contract.
+
+        ?contract contract:year ?year.
+
+        ?team_id team:signed ?contract.
+        ?team_id team:name ?team_name.
+
         FILTER regex(?season, "SEASON_YEAR" , "i")
+        FILTER regex(?year, "SEASON_YEAR" , "i")
 
     }
 
@@ -273,7 +283,7 @@ def pilots_season_final_standings(season):
                  pilot['forename']['value'], 
                  pilot['surname']['value'], 
                  pilot['nationality']['value'],
-                 pilot['season']['value'],
+                 pilot['team_name']['value'],
                  pilot['position']['value'],
                  pilot['points']['value']) for pilot in data]
     else:
@@ -345,5 +355,5 @@ def teams_season_final_standings(season):
 #print(pilot_total_championships("HAM"))
 #print(team_total_championships("Mercedes"))
 
-#print(pilots_season_final_standings(2022))
+print(pilots_season_final_standings(2022))
 #print(teams_season_final_standings(2021))

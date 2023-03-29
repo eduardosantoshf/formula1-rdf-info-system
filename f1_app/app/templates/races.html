@@ -1,0 +1,41 @@
+{%  extends "base.html" %}
+
+{% block content %}
+    <!-- Results table -->
+    <header class="py-5 bg-light border-bottom mb-4">
+        <div class="container">
+            <div class="text-center">
+                <h1 class="fw-bolder">Races Results</h1>
+            </div>
+        </div>
+    </header>
+    <div class="container col-md-10">
+        <div class="row mb-4">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link" id="nav-2022-tab" data-toggle="tab" href="#nav-2022" role="tab" aria-controls="nav-2022" aria-selected="true" onclick="window.location.href='/races/2022'">2022</a>
+                    <a class="nav-item nav-link" id="nav-2021-tab" data-toggle="tab" href="#nav-2021" role="tab" aria-controls="nav-2021" aria-selected="false" onclick="window.location.href='/races/2021'">2021</a>
+                    <a class="nav-item nav-link" id="nav-2020-tab" data-toggle="tab" href="#nav-2020" role="tab" aria-controls="nav-2020" aria-selected="false" onclick="window.location.href='/races/2020'">2020</a>
+                    <a class="nav-item nav-link" id="nav-2019-tab" data-toggle="tab" href="#nav-2019" role="tab" aria-controls="nav-2019" aria-selected="false" onclick="window.location.href='/races/2019'">2019</a>
+                </div>
+            </nav>
+        </div>
+        <div class="row">
+            {% for i in data %}
+            <div class="card" style="width: 18rem; margin: 2rem;">
+                <img class="card-img-top" src="../static/img/f1.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{ i.1 }}</h5>
+                    <p class="card-text">{{ i.2 }}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Round: {{ i.3 }}</li>
+                </ul>
+                <div class="card-body text-center">
+                    <button href="#" type="button" class="btn btn-dark">Modal for results</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
