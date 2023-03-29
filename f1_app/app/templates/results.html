@@ -9,39 +9,50 @@
             </div>
         </div>
     </header>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="row mb-4">
-                    <nav>
-                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="nav-2023-tab" data-toggle="tab" href="#nav-2023" role="tab" aria-controls="nav-2023" aria-selected="true">2023</a>
-                            <a class="nav-item nav-link" id="nav-2022-tab" data-toggle="tab" href="#nav-2022" role="tab" aria-controls="nav-2022" aria-selected="false">2022</a>
-                            <a class="nav-item nav-link" id="nav-2021-tab" data-toggle="tab" href="#nav-2021" role="tab" aria-controls="nav-2021" aria-selected="false">2021</a>
-                            <a class="nav-item nav-link" id="nav-2020-tab" data-toggle="tab" href="#nav-2020" role="tab" aria-controls="nav-2020" aria-selected="false">2020</a>
-                            <a class="nav-item nav-link" id="nav-2019-tab" data-toggle="tab" href="#nav-2019" role="tab" aria-controls="nav-2019" aria-selected="false">2019</a>
-                        </div>
-                    </nav>
+    <div class="container col-md-10">
+        <div class="row mb-4">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link" id="nav-2022-tab" data-toggle="tab" href="#nav-2022" role="tab" aria-controls="nav-2022" aria-selected="true" onclick="window.location.href='/results/2022'">2022</a>
+                    <a class="nav-item nav-link" id="nav-2021-tab" data-toggle="tab" href="#nav-2021" role="tab" aria-controls="nav-2021" aria-selected="false" onclick="window.location.href='/results/2021'">2021</a>
+                    <a class="nav-item nav-link" id="nav-2020-tab" data-toggle="tab" href="#nav-2020" role="tab" aria-controls="nav-2020" aria-selected="false" onclick="window.location.href='/results/2020'">2020</a>
+                    <a class="nav-item nav-link" id="nav-2019-tab" data-toggle="tab" href="#nav-2019" role="tab" aria-controls="nav-2019" aria-selected="false" onclick="window.location.href='/results/2019'">2019</a>
                 </div>
-                <div class="row">
-                    <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-2023" role="tabpanel" aria-labelledby="nav-2023-tab">
-                            <h2>Bla bla bal</h2>
-                        </div>
-                        <div class="tab-pane fade" id="nav-2022" role="tabpanel" aria-labelledby="nav-2022-tab">
-                            <h2>Bla bla bal</h2>
-                        </div>
-                        <div class="tab-pane fade" id="nav-2021" role="tabpanel" aria-labelledby="nav-2021-tab">
-                            <h2>Bla bla bal</h2>
-                        </div>
-                        <div class="tab-pane fade" id="nav-2020" role="tabpanel" aria-labelledby="nav-2020-tab">
-                            <h2>Bla bla bal</h2>
-                        </div>
-                        <div class="tab-pane fade" id="nav-2019" role="tabpanel" aria-labelledby="nav-2019-tab">
-                            <h2>Bla bla</h2>
-                        </div>
-                    </div>
-                </div>
+            </nav>
+        </div>
+        <div class="row col-lg-12">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Code</th>
+                            <th scope="col">Forename</th>
+                            <th scope="col">Surname</th>
+                            <th scope="col">Nationality</th>
+                            <th scope="col">Season</th>
+                            <th scope="col">Position</th>
+                            <th scope="col">Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in data %}
+                        <tr>
+                        {% if i.5 == '1' or i.5 == '2' or i.5 == '3' %}
+                            <tr class="table-success">
+                        {% else %}
+                            <tr>
+                        {% endif %}
+                        <th scope="row">{{i.0}}</th>                      
+                        <th >{{i.1}}</th>
+                        <th >{{i.2}}</th>
+                        <th >{{i.3}}</th>
+                        <th >{{i.4}}</th>
+                        <th >{{i.5}}</th>
+                        <th >{{i.6}}</th>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
