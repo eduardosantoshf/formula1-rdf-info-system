@@ -2,7 +2,7 @@
 # @Author: Eduardo Santos
 # @Date:   2023-03-25 19:38:14
 # @Last Modified by:   Eduardo Santos
-# @Last Modified time: 2023-03-28 17:48:18
+# @Last Modified time: 2023-03-30 09:29:42
 
 import csv
 from pprint import pprint
@@ -72,27 +72,13 @@ with open("../datasets/teams.csv") as file:
         row.pop(0)
         teams_dict[t_id] = row
 
-        team_base_rdf = "<{}/team".format(base_rdf)
-
-        # Teams
-        team_id = "{}/id/{}>".format(team_base_rdf, t_id)
-
-        team_info = teams_dict[t_id]
-
-        team_code_pred = "{}/pred/name>".format(team_base_rdf)
-        team_name = "\"{}\"".format(team_info[1])
-        team_triples.add("{} {} {} .".format(team_id, team_code_pred, team_name))
-
-        team_code_pred = "{}/pred/nationality>".format(team_base_rdf)
-        team_nationality = "\"{}\"".format(team_info[2])
-        team_triples.add("{} {} {} .".format(team_id, team_code_pred, team_nationality))
-
 
 with open("../datasets/team_final_standings.csv") as file:
     file.readline()
     reader = csv.reader(file)
 
     for row in reader:
+        team_base_rdf = "<{}/team".format(base_rdf)
         team_final_standing_base_rdf = "<{}/team_final_standing".format(base_rdf)
 
         team_final_standing_id = "{}/id/{}>".format(team_final_standing_base_rdf, row[0])
@@ -146,10 +132,13 @@ with open('../datasets/results.csv', 'r') as file:
 
         # Drivers
         driver_base_rdf = "<{}/driver".format(base_rdf)
+        
         d_id = row[2]
         t_id = row[3]
+
         driver_id = "{}/id/{}>".format(driver_base_rdf, d_id)
         team_id = "{}/id/{}>".format(team_base_rdf, t_id)
+
         if d_id not in processed_drivers:
             driver_info = drivers_dict[d_id]
 
@@ -170,6 +159,19 @@ with open('../datasets/results.csv', 'r') as file:
             driver_triples.add("{} {} {} .".format(driver_id, driver_nationality_pred, driver_nationality))
 
             processed_races.append(r_id)
+
+        # Teams
+        team_id = "{}/id/{}>".format(team_base_rdf, t_id)
+
+        team_info = teams_dict[t_id]
+
+        team_code_pred = "{}/pred/name>".format(team_base_rdf)
+        team_name = "\"{}\"".format(team_info[1])
+        team_triples.add("{} {} {} .".format(team_id, team_code_pred, team_name))
+
+        team_code_pred = "{}/pred/nationality>".format(team_base_rdf)
+        team_nationality = "\"{}\"".format(team_info[2])
+        team_triples.add("{} {} {} .".format(team_id, team_code_pred, team_nationality))
 
         # Driver Standing
         driver_standing_base_rdf = "<{}/driver_standing".format(base_rdf)
@@ -246,6 +248,9 @@ with open('../datasets/results.csv', 'r') as file:
 
     #pprint(contract_triples)
     #pprint(driver_triples)
+
+    #for i in team_triples:
+    #    print(i)
         
 
 with open('../datasets/driver_final_standings.csv', 'r') as file:
@@ -275,9 +280,8 @@ with open('../datasets/driver_final_standings.csv', 'r') as file:
 
     #for i in driver_standing_triples:
     #    print(i)
-
-    #for i in team_triples:
-    #    print(i)
+    
+    
 
 f1_set = set()
 for triple in triples:
