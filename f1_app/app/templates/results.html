@@ -1,6 +1,15 @@
 {%  extends "base.html" %}
 
 {% block content %}
+    <script >
+        function change_active(){
+            var url = window.location.href.split("/");
+            year = url[4].replace("#", "");
+            element = document.getElementById(year);
+            element.classList.add('active');
+        }
+    </script>
+    <body onload="change_active()">
     <!-- Results table -->
     <header class="py-5 bg-light border-bottom mb-4">
         <div class="container">
@@ -11,44 +20,41 @@
     </header>
     <div class="container col-md-10">
         <div class="row mb-4">
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link" id="nav-2022-tab" data-toggle="tab" href="#nav-2022" role="tab" aria-controls="nav-2022" aria-selected="true" onclick="window.location.href='/results/2022'">2022</a>
-                    <a class="nav-item nav-link" id="nav-2021-tab" data-toggle="tab" href="#nav-2021" role="tab" aria-controls="nav-2021" aria-selected="false" onclick="window.location.href='/results/2021'">2021</a>
-                    <a class="nav-item nav-link" id="nav-2020-tab" data-toggle="tab" href="#nav-2020" role="tab" aria-controls="nav-2020" aria-selected="false" onclick="window.location.href='/results/2020'">2020</a>
-                    <a class="nav-item nav-link" id="nav-2019-tab" data-toggle="tab" href="#nav-2019" role="tab" aria-controls="nav-2019" aria-selected="false" onclick="window.location.href='/results/2019'">2019</a>
-                </div>
-            </nav>
+            <ul class="nav nav-pills justify-content-center">
+                <li class="nav-item">
+                  <a class="nav-link" id="2022" href="#" onclick="window.location.href='/results/2022'">2022</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="2021" href="#" onclick="window.location.href='/results/2021'">2021</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="2020" href="#" onclick="window.location.href='/results/2020'">2020</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="2019" href="#" onclick="window.location.href='/results/2019'">2019</a>
+                </li>
+            </ul>
         </div>
         <div class="row col-lg-12">
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead class="thead-dark">
                         <tr>
-                            <th scope="col">Code</th>
-                            <th scope="col">Forename</th>
-                            <th scope="col">Surname</th>
-                            <th scope="col">Nationality</th>
+                            <th scope="col">Short Code</th>
+                            <th scope="col">Name</th>
                             <th scope="col">Team</th>
-                            <th scope="col">Position</th>
                             <th scope="col">Points</th>
+                            <th scope="col">Position</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for i in data %}
                         <tr>
-                        {% if i.5 == '1' or i.5 == '2' or i.5 == '3' %}
-                            <tr class="table-success">
-                        {% else %}
-                            <tr>
-                        {% endif %}
                         <th scope="row">{{i.0}}</th>                      
-                        <th >{{i.1}}</th>
-                        <th >{{i.2}}</th>
-                        <th >{{i.3}}</th>
+                        <th >{{i.2}}  {{i.1}}</th>
                         <th >{{i.4}}</th>
-                        <th >{{i.5}}</th>
                         <th >{{i.6}}</th>
+                        <th >{{i.5}}</th>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -57,3 +63,4 @@
         </div>
     </div>
 {% endblock %}
+</body>
