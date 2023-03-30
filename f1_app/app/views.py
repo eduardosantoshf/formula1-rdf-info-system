@@ -55,9 +55,9 @@ def results(request, season):
 
 def teams(request):
     teams = teams_queries.get_all_teams()
-    data = {'data': results}
+    data = {'data': teams}
     print(data)
-    return render(request, "teams.html")
+    return render(request, "teams.html", data)
 
 def races(request, season):
     races = races_queries.races_by_season(season)
