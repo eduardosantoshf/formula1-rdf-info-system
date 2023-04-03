@@ -67,9 +67,9 @@ def get_all_teams():
     res = accessor.sparql_select(body=payload_query, repo_name=repo)
     res = json.loads(res)
 
-    all_teams = [(t["team_name"]["value"]) for t in res['results']['bindings']]
+    all_teams = [(t["team_name"]["value"], t['team_nationality']['value']) for t in res['results']['bindings']]
 
-    #print(all_teams)
+    print(all_teams)
 
     return all_teams
 

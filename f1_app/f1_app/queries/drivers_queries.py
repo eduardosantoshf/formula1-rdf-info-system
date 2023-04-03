@@ -76,14 +76,15 @@ def get_pilot_info(name):
     Returns
     -------
     list : tuples
-        [(driver_id, forename, surname, nationality)]
+        [(driver_code, forename, surname, nationality)]
     """
 def list_all_pilots():
     query = """
     PREFIX driver: <http://f1/driver/pred/> 
 
-    SELECT ?driver_id ?forename ?surname ?nationality WHERE
+    SELECT ?driver_code ?forename ?surname ?nationality WHERE
     {
+        ?driver_id driver:code ?driver_code.
         ?driver_id driver:nationality ?nationality.
         ?driver_id driver:forename ?forename.
         ?driver_id driver:surname ?surname.
@@ -98,7 +99,7 @@ def list_all_pilots():
 
     data = response['results']['bindings']
 
-    return([(pilot['driver_id']['value'].split('/')[-1], pilot['forename']['value'], pilot['surname']['value'], pilot['nationality']['value']) for pilot in data])
+    return([(pilot['driver_code']['value'], pilot['forename']['value'], pilot['surname']['value'], pilot['nationality']['value']) for pilot in data])
 
 
 

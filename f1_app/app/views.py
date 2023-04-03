@@ -2,6 +2,7 @@ from django.shortcuts import render
 from f1_app.queries import races_queries
 from f1_app.queries import standings_queries
 from f1_app.queries import teams_queries
+from f1_app.queries import drivers_queries
 
 # Create your views here.
 
@@ -55,9 +56,35 @@ def results(request, season):
 
 def teams(request):
     teams = teams_queries.get_all_teams()
-    data = {'data': teams}
+    final_teams = []
+    for team in teams:
+        championships = standings_queries.team_total_championships(team[0])
+        if championships:
+            final_teams.append((team[0], team[1], championships[2]))
+        else:
+            final_teams.append((team[0], team[1], '0'))
+    
+    sorted_list = sorted(final_teams, key=lambda x: x[2], reverse=True)
+
+    data = {'data': sorted_list}
     print(data)
     return render(request, "teams.html", data)
+
+def drivers(request):
+    drivers = drivers_queries.list_all_pilots()
+    final_drivers = []
+    for driver in drivers:
+        championships = standings_queries.pilot_total_championships(driver[0])
+        if championships:
+            final_drivers.append((driver[0], driver[1],  driver[2],  driver[3], championships[4]))
+        else:
+            final_drivers.append((driver[0], driver[1],  driver[2],  driver[3], '0'))
+    
+    sorted_list = sorted(final_drivers, key=lambda x: x[4], reverse=True)
+
+    data = {'data': sorted_list}
+    print(data)
+    return render(request, "drivers.html", data)
 
 def races(request, season):
     races = races_queries.races_by_season(season)
