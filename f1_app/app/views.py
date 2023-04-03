@@ -63,7 +63,7 @@ def races(request, season):
     races = races_queries.races_by_season(season)
     new_races = []
     for race in races:
-        new_races.append((race[0], race[1], cities[race[1]], race[3]))
+        new_races.append((race[0], race[1], cities[race[1]], race[3], season))
 
     print(new_races)
     if len(new_races):
@@ -72,3 +72,13 @@ def races(request, season):
         data = {'error': True}
         print("error")
     return render(request, "races.html", data)
+
+def race_info(request, season, race_name):
+    race_info = races_queries.all_pilots_standings_by_race_by_season(race_name, season)
+    print(race_info)
+    if len(race_info):
+        data = {'data': race_info}
+    else:
+        data = {'error': True}
+    return render(request, "race-modal.html", data)
+    

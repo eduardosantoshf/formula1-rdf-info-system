@@ -6,7 +6,15 @@
             var src =  "../static/img/" + src_name + ".jpg";
             return src;
         }
+
+        function change_active(){
+            var url = window.location.href.split("/");
+            year = url[4].replace("#", "");
+            element = document.getElementById(year);
+            element.classList.add('active');
+        }
     </script>
+    <body onload="change_active()">
     <!-- Results table -->
     <header class="py-5 bg-light border-bottom mb-4">
         <div class="container">
@@ -17,14 +25,20 @@
     </header>
     <div class="container col-md-10">
         <div class="row mb-4">
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link" id="nav-2022-tab" data-toggle="tab" href="#nav-2022" role="tab" aria-controls="nav-2022" aria-selected="true" onclick="window.location.href='/races/2022'">2022</a>
-                    <a class="nav-item nav-link" id="nav-2021-tab" data-toggle="tab" href="#nav-2021" role="tab" aria-controls="nav-2021" aria-selected="false" onclick="window.location.href='/races/2021'">2021</a>
-                    <a class="nav-item nav-link" id="nav-2020-tab" data-toggle="tab" href="#nav-2020" role="tab" aria-controls="nav-2020" aria-selected="false" onclick="window.location.href='/races/2020'">2020</a>
-                    <a class="nav-item nav-link" id="nav-2019-tab" data-toggle="tab" href="#nav-2019" role="tab" aria-controls="nav-2019" aria-selected="false" onclick="window.location.href='/races/2019'">2019</a>
-                </div>
-            </nav>
+            <ul class="nav nav-pills justify-content-center">
+                <li class="nav-item">
+                  <a class="nav-link" id="2022" href="#" onclick="window.location.href='/races/2022'">2022</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="2021" href="#" onclick="window.location.href='/races/2021'">2021</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="2020" href="#" onclick="window.location.href='/races/2020'">2020</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="2019" href="#" onclick="window.location.href='/races/2019'">2019</a>
+                </li>
+            </ul>
         </div>
         <div class="row">
             {% for i in data %}
@@ -38,10 +52,12 @@
                     <li class="list-group-item">Round: {{ i.3 }}</li>
                 </ul>
                 <div class="card-body text-center">
-                    <button href="#" type="button" class="btn btn-dark">Modal for results</button>
+                    <button href="{% url 'race' season=i.4 race_name=i.1 %}" data-popup-url="{% url 'race' season=i.4 race_name=i.1 %}" type="button" class="open-modal btn btn-dark">Modal for results</button>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
+    {% include "race-info.html" %}
 {% endblock %}
+</body>

@@ -150,8 +150,10 @@ def all_pilots_standings_by_race_by_season(race_name, season):
     PREFIX driver: <http://f1/driver/pred/>
     PREFIX driver_standing: <http://f1/driver_standing/pred/>
     PREFIX race: <http://f1/race/pred/> 
+    PREFIX contract: <http://f1/contract/pred/>
+    PREFIX team: <http://f1/team/pred/>
 
-    SELECT ?code ?forename ?surname ?nationality ?season ?race_name ?round ?grid ?status ?position ?points WHERE
+    SELECT ?code ?forename ?surname ?nationality ?season ?race_name ?round ?grid ?status ?position ?points ?team_name WHERE
     {   
         ?driver_id driver:code ?code.
         ?driver_id driver:forename ?forename.
@@ -168,6 +170,11 @@ def all_pilots_standings_by_race_by_season(race_name, season):
         ?race_id race:name ?race_name.
         ?race_id race:season ?season.
         ?race_id race:round ?round.
+
+        ?driver_id driver:signed_for ?contract.
+        ?contract contract:year ?season.
+        ?team_id team:signed ?contract.
+        ?team_id team:name ?team_name.
 
         FILTER (regex(?season, "SEASON_YEAR" , "i") && regex(?race_name, "RACE_NAME", "i"))
 
@@ -191,6 +198,7 @@ def all_pilots_standings_by_race_by_season(race_name, season):
                  pilot_info['forename']['value'], 
                  pilot_info['surname']['value'], 
                  pilot_info['nationality']['value'],
+                 pilot_info['team_name']['value'],
                  pilot_info['season']['value'],
                  pilot_info['race_name']['value'],
                  pilot_info['round']['value'],
