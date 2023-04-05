@@ -1,0 +1,16 @@
+{% load static %} 
+
+{% if user.is_authenticated %}
+
+
+<form id="logoutForm" action="/logout" method="get">
+	{% csrf_token %}
+	<a role="button" class="btn btn-light" href="{% url 'logout' %}">Logout</a>
+</form>
+
+{% else %}
+<a role="button" class="btn btn-light" href="{% url 'login' %}" style="width: 6rem; margin-left: 2rem;">Login</a>
+<a role="button" class="btn btn-light" href="{% url 'signup' %}" style="width: 6rem; margin-left: 2rem;">Sign Up</a>
+
+
+{% endif %}

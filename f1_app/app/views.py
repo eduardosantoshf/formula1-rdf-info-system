@@ -1,11 +1,25 @@
 from django.http import HttpRequest
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from f1_app.queries import races_queries
 from f1_app.queries import standings_queries
 from f1_app.queries import teams_queries
 from f1_app.queries import drivers_queries
+from app.forms import *
 
 # Create your views here.
+def register(request):
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.refresh_from_db()
+            return redirect('home')
+        else:
+            return render(request, 'signup.html', {'form': form})
+    else:
+        form = SignUpForm()
+        return render(request, 'signup.html', {'form': form})
+
 
 cities = {
     "Australian Grand Prix" : "Melbourne, Australia",
