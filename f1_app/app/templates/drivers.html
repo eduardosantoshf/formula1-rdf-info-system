@@ -10,6 +10,10 @@
         </div>
     </header>
     <div class="container col-md-10">
+        <form class="form-inline d-flex justify-content-center" action="{% url 'driver' %}" method="get">
+            <input class="form-control mr-sm-2 col-md-10" type="text" placeholder="Search" aria-label="Search" name="driver_name">
+            <button class="btn btn-outline-success my-2 my-sm-0 col-md-1" type="submit">Search</button>
+        </form>
         <div class="row">
             {% for i in data %}
             <div class="card" style="width: 23rem; margin: 2rem;">

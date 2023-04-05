@@ -1,3 +1,4 @@
+from django.http import HttpRequest
 from django.shortcuts import render
 from f1_app.queries import races_queries
 from f1_app.queries import standings_queries
@@ -48,7 +49,7 @@ def results(request, season):
     results = standings_queries.pilots_season_final_standings(season)
     if len(results):
         data = {'data': results}
-        print(data)
+        #print(data)
     else:
         data = {'error': True}
         print("error")
@@ -67,32 +68,44 @@ def teams(request):
     sorted_list = sorted(final_teams, key=lambda x: x[2], reverse=True)
 
     data = {'data': sorted_list}
-    print(data)
+    #print(data)
     return render(request, "teams.html", data)
 
 def drivers(request):
-    drivers = drivers_queries.list_all_pilots()
-    final_drivers = []
-    for driver in drivers:
-        championships = standings_queries.pilot_total_championships(driver[0])
-        if championships:
-            final_drivers.append((driver[0], driver[1],  driver[2],  driver[3], championships[4]))
+
+    if 'driver_name' in request.GET and request.GET['driver_name']:
+        driver_name = request.GET['driver_name']
+        driver_info = drivers_queries.get_pilot_info(driver_name)
+
+        if driver_info:
+            driver_info = [(driver_info[0], driver_info[1], driver_info[2], driver_info[3])]
+            return render(request, "drivers.html", {'data': driver_info})
         else:
-            final_drivers.append((driver[0], driver[1],  driver[2],  driver[3], '0'))
+            return render(request, "drivers.html", {'data': []})
+        
+    else:
+        drivers = drivers_queries.list_all_pilots()
+        final_drivers = []
+        for driver in drivers:
+            championships = standings_queries.pilot_total_championships(driver[0])
+            if championships:
+                final_drivers.append((driver[0], driver[1],  driver[2],  driver[3], championships[4]))
+            else:
+                final_drivers.append((driver[0], driver[1],  driver[2],  driver[3], '0'))
+        
+        sorted_list = sorted(final_drivers, key=lambda x: x[4], reverse=True)
+
+        data = {'data': sorted_list}
+
+        return render(request, "drivers.html", data)
     
-    sorted_list = sorted(final_drivers, key=lambda x: x[4], reverse=True)
-
-    data = {'data': sorted_list}
-    print(data)
-    return render(request, "drivers.html", data)
-
 def races(request, season):
     races = races_queries.races_by_season(season)
     new_races = []
     for race in races:
         new_races.append((race[0], race[1], cities[race[1]], race[3], season))
 
-    print(new_races)
+    #print(new_races)
     if len(new_races):
         data = {'data': new_races}
     else:
@@ -102,7 +115,7 @@ def races(request, season):
 
 def race_info(request, season, race_name):
     race_info = races_queries.all_pilots_standings_by_race_by_season(race_name, season)
-    print(race_info)
+    #print(race_info)
     if len(race_info):
         data = {'data': race_info}
     else:
