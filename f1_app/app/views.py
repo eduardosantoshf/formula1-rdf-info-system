@@ -5,8 +5,13 @@ from f1_app.queries import standings_queries
 from f1_app.queries import teams_queries
 from f1_app.queries import drivers_queries
 from app.forms import *
+from django.contrib.auth import update_session_auth_hash
 
 # Create your views here.
+def start(request):
+    return render(request, 'index.html')
+
+
 def register(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
@@ -60,79 +65,95 @@ cities = {
 }
 
 def results(request, season):
-    results = standings_queries.pilots_season_final_standings(season)
-    if len(results):
-        data = {'data': results}
-        #print(data)
+    if request.user.is_authenticated:
+        results = standings_queries.pilots_season_final_standings(season)
+        if len(results):
+            data = {'data': results}
+            #print(data)
+        else:
+            data = {'error': True}
+            print("error")
+        return render(request, "results.html", data)
     else:
-        data = {'error': True}
-        print("error")
-    return render(request, "results.html", data)
+        return redirect('home')
 
 def teams(request):
-    teams = teams_queries.get_all_teams()
-    final_teams = []
-    for team in teams:
-        championships = standings_queries.team_total_championships(team[0])
-        if championships:
-            final_teams.append((team[0], team[1], championships[2]))
-        else:
-            final_teams.append((team[0], team[1], '0'))
-    
-    sorted_list = sorted(final_teams, key=lambda x: x[2], reverse=True)
-
-    data = {'data': sorted_list}
-    #print(data)
-    return render(request, "teams.html", data)
-
-def drivers(request):
-
-    if 'driver_name' in request.GET and request.GET['driver_name']:
-        driver_name = request.GET['driver_name']
-        driver_info = drivers_queries.get_pilot_info(driver_name)
-
-        if driver_info:
-            driver_info = [(driver_info[0], driver_info[1], driver_info[2], driver_info[3])]
-            return render(request, "drivers.html", {'data': driver_info})
-        else:
-            return render(request, "drivers.html", {'data': []})
-        
-    else:
-        drivers = drivers_queries.list_all_pilots()
-        final_drivers = []
-        for driver in drivers:
-            championships = standings_queries.pilot_total_championships(driver[0])
+    if request.user.is_authenticated:
+        teams = teams_queries.get_all_teams()
+        final_teams = []
+        for team in teams:
+            championships = standings_queries.team_total_championships(team[0])
             if championships:
-                final_drivers.append((driver[0], driver[1],  driver[2],  driver[3], championships[4]))
+                final_teams.append((team[0], team[1], championships[2]))
             else:
-                final_drivers.append((driver[0], driver[1],  driver[2],  driver[3], '0'))
+                final_teams.append((team[0], team[1], '0'))
         
-        sorted_list = sorted(final_drivers, key=lambda x: x[4], reverse=True)
+        sorted_list = sorted(final_teams, key=lambda x: x[2], reverse=True)
 
         data = {'data': sorted_list}
+        #print(data)
+        return render(request, "teams.html", data)
+    else:
+        return redirect('home')
 
-        return render(request, "drivers.html", data)
+def drivers(request):
+    if request.user.is_authenticated:
+        if 'driver_name' in request.GET and request.GET['driver_name']:
+            driver_name = request.GET['driver_name']
+            driver_info = drivers_queries.get_pilot_info(driver_name)
+
+            if driver_info:
+                driver_info = [(driver_info[0], driver_info[1], driver_info[2], driver_info[3])]
+                return render(request, "drivers.html", {'data': driver_info})
+            else:
+                return render(request, "drivers.html", {'data': []})
+            
+        else:
+            drivers = drivers_queries.list_all_pilots()
+            final_drivers = []
+            for driver in drivers:
+                championships = standings_queries.pilot_total_championships(driver[0])
+                if championships:
+                    final_drivers.append((driver[0], driver[1],  driver[2],  driver[3], championships[4]))
+                else:
+                    final_drivers.append((driver[0], driver[1],  driver[2],  driver[3], '0'))
+            
+            sorted_list = sorted(final_drivers, key=lambda x: x[4], reverse=True)
+
+            data = {'data': sorted_list}
+
+            return render(request, "drivers.html", data)
+    else:
+        return redirect('home')
     
 def races(request, season):
-    races = races_queries.races_by_season(season)
-    new_races = []
-    for race in races:
-        new_races.append((race[0], race[1], cities[race[1]], race[3], season))
+    if request.user.is_authenticated:
+        races = races_queries.races_by_season(season)
+        new_races = []
+        for race in races:
+            new_races.append((race[0], race[1], cities[race[1]], race[3], season))
 
-    #print(new_races)
-    if len(new_races):
-        data = {'data': new_races}
+        #print(new_races)
+        if len(new_races):
+            data = {'data': new_races}
+        else:
+            data = {'error': True}
+            print("error")
+        return render(request, "races.html", data)
     else:
-        data = {'error': True}
-        print("error")
-    return render(request, "races.html", data)
+        return redirect('home')
+    
 
 def race_info(request, season, race_name):
-    race_info = races_queries.all_pilots_standings_by_race_by_season(race_name, season)
-    #print(race_info)
-    if len(race_info):
-        data = {'data': race_info}
+    if request.user.is_authenticated:
+        race_info = races_queries.all_pilots_standings_by_race_by_season(race_name, season)
+        #print(race_info)
+        if len(race_info):
+            data = {'data': race_info}
+        else:
+            data = {'error': True}
+        return render(request, "race-modal.html", data)
     else:
-        data = {'error': True}
-    return render(request, "race-modal.html", data)
+        return redirect('home')
+    
     

@@ -10,6 +10,16 @@
         }
     </script>
     <body onload="change_active()">
+    {% if  errors is not None %}
+       <div class="alert alert-danger" role="alert">
+            {{ errors }}
+        </div>
+    {% endif %}
+    {% if  successes is not None %}
+       <div class="alert alert-success" role="alert">
+            {{ successes }}
+        </div>
+    {% endif %}
     <!-- Results table -->
     <header class="py-5 bg-light border-bottom mb-4">
         <div class="container">

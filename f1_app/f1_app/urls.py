@@ -23,7 +23,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
     path('signup/', views.register, name='signup'),
-    path('', views.drivers, name='home'),
+    path('', views.start, name='home'),
     path('teams', views.teams),
     path('results/<int:season>', views.results),
     path('races/<int:season>', views.races),
