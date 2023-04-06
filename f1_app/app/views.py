@@ -156,4 +156,9 @@ def race_info(request, season, race_name):
     else:
         return redirect('home')
     
-    
+
+def curiosities(request):
+    if request.user.is_authenticated:
+        return render(request, 'curiosities.html')
+    else:
+        return redirect('home')

@@ -29,5 +29,6 @@ urlpatterns = [
     path('races/<int:season>', views.races),
     path('races/<int:season>/<str:race_name>', views.race_info, name="race"),
     path('teams', views.teams),
-    path('drivers', views.drivers, name="driver")
+    path('drivers', views.drivers, name="driver"),
+    path('curiosities', views.curiosities, name="curiosities")
 ]
