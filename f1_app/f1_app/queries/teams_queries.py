@@ -2,7 +2,7 @@
 # @Author: Eduardo Santos
 # @Date:   2023-03-26 22:49:05
 # @Last Modified by:   Eduardo Santos
-# @Last Modified time: 2023-03-26 23:55:44
+# @Last Modified time: 2023-04-09 15:21:49
 
 import json
 from s4api.graphdb_api import GraphDBApi
@@ -34,16 +34,16 @@ def get_team_info(team_name):
     res = accessor.sparql_select(body=payload_query, repo_name=repo)
     res = json.loads(res)
 
-    all_teams = [(t["team_name"]["value"], t["team_nationality"]["value"]) for t in res['results']['bindings']]
+    all_teams = [(t["team_id"]["value"].split("id/")[1], t["team_name"]["value"], t["team_nationality"]["value"]) for t in res['results']['bindings']]
 
     probably_similar = {}
     for team in all_teams:
-        sim_ratio = SequenceMatcher(None, team_name.lower(), team[0].lower()).ratio()
+        sim_ratio = SequenceMatcher(None, team_name.lower(), team[1].lower()).ratio()
         if sim_ratio > 0.50:
             if team_name not in probably_similar:
-                probably_similar[team_name] = [((team[0], team[1]), sim_ratio)]
+                probably_similar[team_name] = [((team[0], team[1], team[2]), sim_ratio)]
             else:
-                probably_similar[team_name].append(((team[0], team[1]), sim_ratio))
+                probably_similar[team_name].append(((team[0], team[1], team[2]), sim_ratio))
 
     most_similar = {k: sorted(v, key = lambda x: x[1], reverse = True)[:3] for k, v in probably_similar.items()}
 
