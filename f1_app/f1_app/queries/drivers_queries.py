@@ -21,17 +21,18 @@ accessor = GraphDBApi(client)
     Returns
     -------
     list
-        [driver_id, forename, surname, nationality]
+        [driver_code, forename, surname, nationality]
     """
 def get_pilot_info(name):
     query = """
     PREFIX driver: <http://f1/driver/pred/> 
 
-    SELECT ?driver_id ?forename ?surname ?nationality WHERE
+    SELECT ?driver_code ?forename ?surname ?nationality WHERE
     {
     {
-    SELECT DISTINCT ?driver_id ?forename ?surname ?nationality
+    SELECT DISTINCT ?driver_code ?forename ?surname ?nationality
     WHERE{
+        ?driver_id driver:code ?driver_code.
         ?driver_id driver:nationality ?nationality.
         ?driver_id driver:forename ?forename.
         ?driver_id driver:surname ?surname.
@@ -40,8 +41,9 @@ def get_pilot_info(name):
     }
     UNION
     {
-    SELECT DISTINCT ?driver_id ?forename ?surname ?nationality
+    SELECT DISTINCT ?driver_code ?forename ?surname ?nationality
     WHERE{
+        ?driver_id driver:code ?driver_code.
         ?driver_id driver:nationality ?nationality.
         ?driver_id driver:forename ?forename.
         ?driver_id driver:surname ?surname.
@@ -61,7 +63,7 @@ def get_pilot_info(name):
 
     if response['results']['bindings']:
         data = response['results']['bindings'][0]
-        return [data['driver_id']['value'].split('/')[-1], data['forename']['value'], data['surname']['value'], data['nationality']['value']]
+        return [data['driver_code']['value'], data['forename']['value'], data['surname']['value'], data['nationality']['value']]
     else:
         return []
     
@@ -222,6 +224,59 @@ def get_team_pilots_by_season(season, team_name):
                  pilot['team_nationality']['value']) for pilot in data]
     else:
         return []
+
+
+
+""" Get every team for a pilot
+
+    Parameters
+    ----------
+    code : str
+        pilot code
+
+    Returns
+    -------
+    list : tuples
+        [(driver_code, year, team_name)]
+    """
+def get_pilot_teams(code):
+
+    query = """
+    PREFIX driver: <http://f1/driver/pred/> 
+    PREFIX contract: <http://f1/contract/pred/>
+    PREFIX team: <http://f1/team/pred/>
+
+    SELECT ?code ?year ?team_name WHERE
+    {
+        ?driver_id driver:code ?code.
+        ?driver_id driver:signed_for ?contract.
+
+        ?contract contract:year ?year.
+        ?contract contract:team ?team.
+
+        ?team_id team:signed ?contract.
+        ?team_id team:name ?team_name.
+
+
+        FILTER (regex(?code, "DRIVER_CODE", "i"))
+    }
+
+    
+    """
+    query = query.replace("DRIVER_CODE", code)
+
+    payload_query = {"query": query}
+    response = accessor.sparql_select(body=payload_query, repo_name=repo)
+
+    response = json.loads(response)
+
+    if response['results']['bindings']:
+        data = response['results']['bindings']
+        return [(pilot['code']['value'], 
+                 pilot['year']['value'],
+                 pilot['team_name']['value']) for pilot in data]
+    else:
+        return []
     
         
 
@@ -233,3 +288,4 @@ def get_team_pilots_by_season(season, team_name):
 #print(list_all_pilots())
 #print(get_pilots_by_season(2022))
 #print(get_team_pilots_by_season(2022, "Mercedes"))
+#print(get_pilot_teams("GAS"))
