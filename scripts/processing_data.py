@@ -74,6 +74,7 @@ with open("../datasets/teams.csv") as file:
 
 
 ######################################################### Processing data ######################################################### 
+
 with open("../datasets/team_final_standings.csv") as file:
     file.readline()
     reader = csv.reader(file)
@@ -277,7 +278,7 @@ for triple in triples:
     for t in triple: 
         f1_set.add(t)
 
-# save triples on .nt file
+# Save triples on .nt file
 with open("../datasets/f1.nt", "w") as output_file:
     for s in f1_set:
         output_file.write("{}\n".format(s))
