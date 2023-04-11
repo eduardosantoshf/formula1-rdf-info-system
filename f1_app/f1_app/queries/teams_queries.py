@@ -73,5 +73,64 @@ def get_all_teams():
 
     return all_teams
 
-get_all_teams()
+
+
+""" Get every driver for a team
+
+    Parameters
+    ----------
+    name : str
+        team code
+
+    Returns
+    -------
+    list : tuples
+        [(year, team_name, forename, surname)]
+    """
+def get_team_drivers(name):
+
+    query = """
+    PREFIX driver: <http://f1/driver/pred/> 
+    PREFIX contract: <http://f1/contract/pred/>
+    PREFIX team: <http://f1/team/pred/>
+
+    SELECT  ?year ?team_name ?forename ?surname WHERE
+    {
+        ?driver_id driver:code ?code.
+        ?driver_id driver:signed_for ?contract.
+        ?driver_id driver:forename ?forename.
+        ?driver_id driver:surname ?surname.
+
+        ?contract contract:year ?year.
+        ?contract contract:team ?team.
+
+        ?team_id team:signed ?contract.
+        ?team_id team:name ?team_name.
+
+
+        FILTER (regex(?team_name, "TEAM_NAME", "i"))
+    }
+
+    ORDER BY DESC(?year)
+
+    
+    """
+    query = query.replace("TEAM_NAME", name)
+
+    payload_query = {"query": query}
+    response = accessor.sparql_select(body=payload_query, repo_name=repo)
+
+    response = json.loads(response)
+
+    if response['results']['bindings']:
+        data = response['results']['bindings']
+        return [(x['year']['value'],
+                 x['team_name']['value'],
+                 x['forename']['value'],
+                 x['surname']['value']) for x in data]
+    else:
+        return []
+
+#get_all_teams()
+print(get_team_drivers("Mercedes"))
 

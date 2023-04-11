@@ -81,8 +81,10 @@ def teams(request):
     if request.user.is_authenticated:
         teams = teams_queries.get_all_teams()
         final_teams = []
+        teams_history = {}
         for team in teams:
             championships = standings_queries.team_total_championships(team[0])
+            teams_history[team[0]] = sorted(teams_queries.get_team_drivers(team[0]), key=lambda x: x[0], reverse=True)
             if championships:
                 final_teams.append((team[0], team[1], championships[2]))
             else:
@@ -90,7 +92,7 @@ def teams(request):
         
         sorted_list = sorted(final_teams, key=lambda x: x[2], reverse=True)
 
-        data = {'data': sorted_list}
+        data = {'data': sorted_list, 'teams_history': teams_history}
         #print(data)
         return render(request, "teams.html", data)
     else:
@@ -102,17 +104,28 @@ def drivers(request):
             driver_name = request.GET['driver_name']
             driver_info = drivers_queries.get_pilot_info(driver_name)
 
+            drivers_history = {}
+
             if driver_info:
-                driver_info = [(driver_info[0], driver_info[1], driver_info[2], driver_info[3])]
-                return render(request, "drivers.html", {'data': driver_info})
+                championships = standings_queries.pilot_total_championships(driver_info[0])
+                drivers_history[driver_info[0]] = sorted(drivers_queries.get_pilot_teams(driver_info[0]), key=lambda x: x[1], reverse=True)
+                if championships:
+                    driver_info = [(driver_info[0], driver_info[1], driver_info[2], driver_info[3], championships[4])]
+                else:
+                    driver_info = [(driver_info[0], driver_info[1], driver_info[2], driver_info[3], '0')]
+                
+                return render(request, "drivers.html", {'data': driver_info, 'drivers_history': drivers_history})
             else:
                 return render(request, "drivers.html", {'data': []})
             
         else:
             drivers = drivers_queries.list_all_pilots()
+            
             final_drivers = []
+            drivers_history = {}
             for driver in drivers:
                 championships = standings_queries.pilot_total_championships(driver[0])
+                drivers_history[driver[0]] = sorted(drivers_queries.get_pilot_teams(driver[0]), key=lambda x: x[1], reverse=True)
                 if championships:
                     final_drivers.append((driver[0], driver[1],  driver[2],  driver[3], championships[4]))
                 else:
@@ -120,7 +133,7 @@ def drivers(request):
             
             sorted_list = sorted(final_drivers, key=lambda x: x[4], reverse=True)
 
-            data = {'data': sorted_list}
+            data = {'data': sorted_list, 'drivers_history': drivers_history}
 
             return render(request, "drivers.html", data)
     else:

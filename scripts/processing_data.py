@@ -61,7 +61,7 @@ with open('../datasets/status.csv', 'r') as file:
     for row in reader:
         status_dict[row[0]] = row[1]
 
-
+### Load teams
 teams_dict = {}
 with open("../datasets/teams.csv") as file:
     file.readline()
@@ -72,6 +72,8 @@ with open("../datasets/teams.csv") as file:
         row.pop(0)
         teams_dict[t_id] = row
 
+
+######################################################### Processing data ######################################################### 
 
 with open("../datasets/team_final_standings.csv") as file:
     file.readline()
@@ -243,14 +245,6 @@ with open('../datasets/results.csv', 'r') as file:
                 # Team - Contract
                 team_contract_pred = "{}/pred/signed>".format(team_base_rdf)
                 team_triples.add("{} {} {} .".format(team_id, team_contract_pred, contract_id))
-
-    #print(processed_contracts)
-
-    #pprint(contract_triples)
-    #pprint(driver_triples)
-
-    #for i in team_triples:
-    #    print(i)
         
 
 with open('../datasets/driver_final_standings.csv', 'r') as file:
@@ -278,16 +272,13 @@ with open('../datasets/driver_final_standings.csv', 'r') as file:
         driver_final_standing_pred = "{}/pred/finished_in>".format(driver_base_rdf)
         driver_triples.add("{} {} {} .".format(driver_id, driver_final_standing_pred, driver_final_standing_id))
 
-    #for i in driver_standing_triples:
-    #    print(i)
-    
-    
 
 f1_set = set()
 for triple in triples:
     for t in triple: 
         f1_set.add(t)
-# save triples on .nt file
+
+# Save triples on .nt file
 with open("../datasets/f1.nt", "w") as output_file:
     for s in f1_set:
         output_file.write("{}\n".format(s))

@@ -27,9 +27,34 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Championships won: {{ i.4 }}</li>
                 </ul>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Drivers History</li>
-                </ul>
+                <div class="modal" id="{{i.0}}" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Teams History</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div style="text-align: center; margin-bottom: 1.5rem;">{{ i.2 }} {{ i.1 }}</div>
+                            {% for key, value in drivers_history.items %}
+                                {% if key == i.0 %}
+                                    {% for x in value %}
+                                        <li class="list-group-item">{{ x.1 }} - {{ x.2 }}</li>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#{{i.0}}">Teams History</button>
+                </div>
             </div>
             {% endfor %}
         </div>
