@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+# @Author: Eduardo Santos
+# @Date:   2023-04-11 16:20:38
+# @Last Modified by:   Eduardo Santos
+# @Last Modified time: 2023-04-11 17:38:22
+
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from f1_app.queries import races_queries
@@ -254,6 +260,62 @@ def add_team(request):
             else:
                 form = CreateTeamForm()
                 return render(request, 'add-team.html', {'form': form})
+        else:
+            return redirect('notfound')
+    else:
+        return redirect('/login')
+
+def delete_driver(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            data = {}
+            if request.method == "POST":
+                form = DeleteDriverForm(request.POST)
+
+                if form.is_valid():    
+                    response = admin_queries.delete_pilot(form.cleaned_data['code'])
+
+                    if response['status_code'] == 204:
+                        data['success'] = 'Successfully deleted the driver!'
+                        form = DeleteDriverForm()
+                        return render(request, 'delete-driver.html', {'data' : data, 'form': form})
+                    
+                    else:
+                        data['error'] = 'Error deleting the driver, make sure the driver\'s code is correct.'
+                        form = DeleteDriverForm()
+                        return render(request, 'delete-driver.html', {'data' : data, 'form': form})
+                    
+            else:
+                form = DeleteDriverForm()
+                return render(request, 'delete-driver.html', {'form': form})
+        else:
+            return redirect('notfound')
+    else:
+        return redirect('/login')
+    
+def delete_team(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            data = {}
+            if request.method == "POST":
+                form = DeleteTeamForm(request.POST)
+
+                if form.is_valid():    
+                    response = admin_queries.delete_team(form.cleaned_data['name'])
+
+                    if response['status_code'] == 204:
+                        data['success'] = 'Successfully deleted the team!'
+                        form = DeleteTeamForm()
+                        return render(request, 'delete-team.html', {'data' : data, 'form': form})
+                    
+                    else:
+                        data['error'] = 'Error deleting the team, make sure that the team exists.'
+                        form = DeleteTeamForm()
+                        return render(request, 'delete-team.html', {'data' : data, 'form': form})
+                    
+            else:
+                form = DeleteTeamForm()
+                return render(request, 'delete-team.html', {'form': form})
         else:
             return redirect('notfound')
     else:

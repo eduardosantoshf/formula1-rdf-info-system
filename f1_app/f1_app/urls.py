@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+# @Author: Eduardo Santos
+# @Date:   2023-04-11 16:20:38
+# @Last Modified by:   Eduardo Santos
+# @Last Modified time: 2023-04-11 17:27:41
+
 """f1_app URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -35,6 +41,9 @@ urlpatterns = [
     path('admin/crud', views.admin_crud, name="adminCrud"),
     path('admin/addDriver', views.add_driver, name="addDriver"),
     path('admin/addTeam', views.add_team, name="addTeam"),
+    path('admin/deleteDriver', views.delete_driver, name="deleteDriver"),
+    path('admin/deleteTeam', views.delete_team, name="deleteTeam"),
+
 
     path('404', views.not_found, name="notfound")
 ]

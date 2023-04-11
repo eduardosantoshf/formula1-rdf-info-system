@@ -2,7 +2,7 @@
 # @Author: Eduardo Santos
 # @Date:   2023-04-08 17:46:26
 # @Last Modified by:   Eduardo Santos
-# @Last Modified time: 2023-04-11 14:01:18
+# @Last Modified time: 2023-04-11 17:33:03
 
 import json
 import random
@@ -31,29 +31,32 @@ accessor = GraphDBApi(client)
     name : str
         Driver's name
     """
-def delete_pilot(driver):
+def delete_pilot(driver_code):
     query = """
     PREFIX driver: <http://f1/driver/pred/> 
     
     DELETE {
         ?s ?p ?o .
     }
-    WHERE {
-        ?s driver:forename DRIVER_NAME ;
+    WHERE { 
+        ?s driver:forename ?forename ;
         driver:surname ?surname ;
         driver:nationality ?nationality ;
-        driver:code ?code ;
+        driver:code "DRIVER_CODE" ;
         ?p ?o .
+    
     }
     """
 
-    query = query.replace("DRIVER_NAME", driver)
+    query = query.replace("DRIVER_CODE", driver_code)
 
     response = requests.post(
         f"{endpoint}/repositories/{repo}/statements",
         headers = headers,
         data = query
     )
+    print(response.status_code)
+    return {'status_code': response.status_code}
 
 
 """ Delete team
@@ -71,12 +74,12 @@ def delete_team(team):
         ?s ?p ?o .
     }
     WHERE {
-        ?s team:name TEAM_NAME ;
+        ?s team:name "TEAM_NAME" ;
         team:nationality ?nationality ;
         ?p ?o .
     }
     """
-
+    
     query = query.replace("TEAM_NAME", team)
 
     response = requests.post(
@@ -84,6 +87,8 @@ def delete_team(team):
         headers = headers,
         data = query
     )
+
+    return {'status_code': response.status_code}
 
 
 """ Delete contract
@@ -124,6 +129,8 @@ def delete_contract(driver, team, season):
         headers = headers,
         data = query
     )
+
+    return {'status_code': response.status_code}
 
 
 """ Create driver
@@ -236,6 +243,8 @@ def create_contract(driver, team, season):
         data = query
     )
     print(response)
+
+    return {'status_code': response.status_code}
 
 
 #create_contract("1", "1111562", 2023)
