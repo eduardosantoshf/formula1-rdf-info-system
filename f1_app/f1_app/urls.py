@@ -24,11 +24,10 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
     path('signup/', views.register, name='signup'),
     path('', views.start, name='home'),
-    path('teams', views.teams),
-    path('results/<int:season>', views.results),
-    path('races/<int:season>', views.races),
+    path('teams', views.teams, name="teams"),
+    path('results/<int:season>', views.results, name="results"),
+    path('races/<int:season>', views.races, name="races"),
     path('races/<int:season>/<str:race_name>', views.race_info, name="race"),
-    path('teams', views.teams),
     path('drivers', views.drivers, name="driver"),
-    path('curiosities', views.curiosities, name="curiosities")
+    path('curiosities/<int:season>', views.curiosities, name="curiosities")
 ]

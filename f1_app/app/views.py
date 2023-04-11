@@ -4,6 +4,7 @@ from f1_app.queries import races_queries
 from f1_app.queries import standings_queries
 from f1_app.queries import teams_queries
 from f1_app.queries import drivers_queries
+from f1_app.queries import curiosities as curiosities_queries
 from app.forms import *
 from django.contrib.auth import update_session_auth_hash
 
@@ -170,8 +171,20 @@ def race_info(request, season, race_name):
         return redirect('home')
     
 
-def curiosities(request):
-    if request.user.is_authenticated:
-        return render(request, 'curiosities.html')
-    else:
-        return redirect('home')
+def curiosities(request, season):
+    top3 = curiosities_queries.pilots_finished_top3_by_season(season)[0:6]
+    top_retired = curiosities_queries.pilots_most_retired_cars_by_season(season)[0:6]
+    to3_accidents = curiosities_queries.pilots_most_accidents_by_season(season)[0:6]
+
+    experienced_pilots = curiosities_queries.experience_drivers()
+    best_pilots = curiosities_queries.best_pilots()[0:6]
+    best_teams = curiosities_queries.best_teams()[0:6]
+
+    all_pilots = drivers_queries.list_all_pilots()
+    nationalities = [pilot[3] for pilot in all_pilots]
+
+
+    data = {'top_3': top3, 'top_retired': top_retired, 'top_accidents': to3_accidents, 
+            'experienced_pilots': experienced_pilots, 'best_pilots': best_pilots, 'best_teams': best_teams, 'nats': nationalities}
+
+    return render(request, 'curiosities.html', data)

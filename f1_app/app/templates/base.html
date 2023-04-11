@@ -22,22 +22,32 @@
         <script src="{% static 'css/styles.css' %}"></script>
 
     </head>
-    <body style="min-height: 100vh; display: flex; flex-direction: column;">
+    <script >
+        function change_active(){
+            console.log("ola")
+            var url = window.location.href.split("/");
+            console.log(url)
+            active = url[3];
+            element = document.getElementById(active);
+            element.classList.add('active');
+        }
+    </script>
+    <body style="min-height: 100vh; display: flex; flex-direction: column;" onload="change_active()">
         <main>
             <!-- Responsive navbar-->
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div class="container col-md-12">
-                    <a class="navbar-brand" href="http://localhost:8000/">Start Bootstrap</a>
+                    <a class="navbar-brand" href="http://localhost:8000/">Formula 1 Stats</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse d-flex justify-content-center" id="navbarSupportedContent">
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                             {% if user.is_authenticated %}
-                            <li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8000/results/2022">Season Results</a></li>
-                            <li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8000/races/2022">Races Results</a></li>
-                            <li class="nav-item"><a class="nav-link" href="http://localhost:8000/teams">Teams</a></li>
-                            <li class="nav-item"><a class="nav-link" href="http://localhost:8000/drivers">Drivers</a></li>
+                            <li {% if request.resolver_match.url_name == 'results' %}class="active"{% endif %} class="nav-item"><a class="nav-link" id="results" aria-current="page" href="http://localhost:8000/results/2022">Season Results</a></li>
+                            <li {% if request.resolver_match.url_name == 'races' %}class="active"{% endif %} class="nav-item"><a class="nav-link" id="races" aria-current="page" href="http://localhost:8000/races/2022">Races Results</a></li>
+                            <li {% if request.resolver_match.url_name == 'teams' %}class="active"{% endif %} class="nav-item"><a class="nav-link" id="teams" href="http://localhost:8000/teams">Teams</a></li>
+                            <li {% if request.resolver_match.url_name == 'drivers' %}class="active"{% endif %} class="nav-item"><a class="nav-link" id="drivers" href="http://localhost:8000/drivers">Drivers</a></li>
                             {% endif %}
-                            <li class="nav-item"><a class="nav-link" href="http://localhost:8000/curiosities">Curiosities</a></li>
+                            <li {% if request.resolver_match.url_name == 'curiosities' %}class="active"{% endif %} class="nav-item"><a class="nav-link" id="curiosities" href="http://localhost:8000/curiosities/2022">Curiosities</a></li>
                         </ul>
                     </div>
                     <div class="col-md-3 d-flex justify-content-end">
