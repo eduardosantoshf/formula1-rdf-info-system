@@ -231,6 +231,34 @@ def add_driver(request):
     else:
         return redirect('/login')
     
+def add_team(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            data = {}
+            if request.method == "POST":
+                form = CreateTeamForm(request.POST)
+
+                if form.is_valid():    
+                    response = admin_queries.create_team(form.cleaned_data['name'], form.cleaned_data['nationality'])
+
+                    if response['status_code'] == 204:
+                        data['success'] = 'Successfully added a new team!'
+                        form = CreateTeamForm()
+                        return render(request, 'add-team.html', {'data' : data, 'form': form})
+                    
+                    else:
+                        data['error'] = 'Error creating the team, make sure you are correctly filling the fields.'
+                        form = CreateTeamForm()
+                        return render(request, 'add-team.html', {'data' : data, 'form': form})
+                    
+            else:
+                form = CreateTeamForm()
+                return render(request, 'add-team.html', {'form': form})
+        else:
+            return redirect('notfound')
+    else:
+        return redirect('/login')
+    
 
 def not_found(request):
     return render(request, 'not-found.html')

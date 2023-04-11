@@ -197,7 +197,9 @@ def create_team(name, nationality):
         headers = headers,
         data = query
     )
-    print(response)
+    #print(response)
+
+    return {'status_code': response.status_code}
 
 #create_team("EI5", "Portuguese")
 

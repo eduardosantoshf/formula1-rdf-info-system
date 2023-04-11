@@ -23,3 +23,11 @@ class CreateDriverForm(forms.Form):
 
     class Meta:
         fields = ('forename', 'surname', 'nationality', 'code')
+
+
+class CreateTeamForm(forms.Form):
+    name = forms.CharField( max_length=30, required=True, help_text='',widget=forms.TextInput(attrs={'class': 'form-control'}))
+    nationality = forms.CharField(max_length=30, required=True, help_text='', widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        fields = ('name', 'nationality')

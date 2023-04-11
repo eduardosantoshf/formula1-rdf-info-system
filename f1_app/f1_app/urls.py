@@ -34,6 +34,7 @@ urlpatterns = [
     # admin
     path('admin/crud', views.admin_crud, name="adminCrud"),
     path('admin/addDriver', views.add_driver, name="addDriver"),
+    path('admin/addTeam', views.add_team, name="addTeam"),
 
     path('404', views.not_found, name="notfound")
 ]
