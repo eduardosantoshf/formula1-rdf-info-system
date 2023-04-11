@@ -13,13 +13,22 @@
 
     var nationalities = {{ nats|safe }};
     var unique = nationalities.filter((item, i, ar) => ar.indexOf(item) === i);
-    console.log(nationalities)
 
     const arr = nationalities;
     const counts = {};
 
     for (const num of arr) {
     counts[num] = counts[num] ? counts[num] + 1 : 1;
+    }
+
+    data_final = []
+    for (const uni of unique) {
+        data_final.push(counts[uni])
+    }
+
+    colors = []
+    for (i=0; i < data_final.length; i++){
+        colors.push(getRandomRgb())
     }
 
     $(document).ready(function() {
@@ -30,13 +39,8 @@
             data: {
                 labels: unique,
                 datasets: [{
-                    data: [counts[unique[0]], counts[unique[1]], counts[unique[2]], counts[unique[3]], counts[unique[4]], counts[unique[5]], counts[unique[6]], counts[unique[7]],
-                    counts[unique[8]], counts[unique[9]],counts[unique[10]],counts[unique[11]],counts[unique[12]],counts[unique[13]],counts[unique[14]],counts[unique[15]],counts[unique[16]],counts[unique[17]],counts[unique[18]]],
-                    backgroundColor: [getRandomRgb(), getRandomRgb(), getRandomRgb(), getRandomRgb(),
-                    getRandomRgb(), getRandomRgb(), getRandomRgb(), getRandomRgb(),
-                    getRandomRgb(), getRandomRgb(), getRandomRgb(), getRandomRgb(),
-                    getRandomRgb(), getRandomRgb(), getRandomRgb(), getRandomRgb(),
-                    getRandomRgb(), getRandomRgb()]
+                    data: data_final,
+                    backgroundColor: colors
                 }]
             },
             options: {
