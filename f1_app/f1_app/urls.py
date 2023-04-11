@@ -29,5 +29,10 @@ urlpatterns = [
     path('races/<int:season>', views.races, name="races"),
     path('races/<int:season>/<str:race_name>', views.race_info, name="race"),
     path('drivers', views.drivers, name="driver"),
-    path('curiosities/<int:season>', views.curiosities, name="curiosities")
+    path('curiosities/<int:season>', views.curiosities, name="curiosities"),
+
+    # admin
+    path('admin/crud', views.admin_crud, name="adminCrud"),
+
+    path('404', views.not_found, name="notfound")
 ]

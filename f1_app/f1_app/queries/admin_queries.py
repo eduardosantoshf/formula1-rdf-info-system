@@ -11,8 +11,7 @@ from s4api.swagger import ApiClient
 from pprint import pprint
 import requests
 
-from drivers_queries import get_pilot_info
-from teams_queries import *
+
 
 endpoint = "http://localhost:7200"
 repo = "db"
@@ -161,6 +160,8 @@ def create_pilot(forename, surname, nationality, code):
         headers = headers,
         data = query
     )
+
+    return {'status_code': response.status_code}
 
 
 #create_pilot("Santosi", "Edu", "Portuguese", "SAN")

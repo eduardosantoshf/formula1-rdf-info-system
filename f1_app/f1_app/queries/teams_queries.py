@@ -132,5 +132,5 @@ def get_team_drivers(name):
         return []
 
 #get_all_teams()
-print(get_team_drivers("Mercedes"))
+#print(get_team_drivers("Mercedes"))
 

@@ -5,6 +5,7 @@ from f1_app.queries import standings_queries
 from f1_app.queries import teams_queries
 from f1_app.queries import drivers_queries
 from f1_app.queries import curiosities as curiosities_queries
+from f1_app.queries import admin_queries
 from app.forms import *
 from django.contrib.auth import update_session_auth_hash
 
@@ -188,3 +189,39 @@ def curiosities(request, season):
             'experienced_pilots': experienced_pilots, 'best_pilots': best_pilots, 'best_teams': best_teams, 'nats': nationalities}
 
     return render(request, 'curiosities.html', data)
+
+
+
+###### ADMIN ######
+
+def admin_crud(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            data = {}
+            if request.method == "POST":
+                form = CreateDriverForm(request.POST)
+
+                if form.is_valid():    
+                    response = admin_queries.create_pilot(form.cleaned_data['forename'], form.cleaned_data['surname'], form.cleaned_data['nationality'], form.cleaned_data['code'])
+
+                    if response['status_code'] == 204:
+                        data['success'] = 'Successfully added a new driver!'
+                        form = CreateDriverForm()
+                        return render(request, 'admin.html', {'data' : data, 'form': form})
+                    
+                    else:
+                        data['error'] = 'Error creating the driver, make sure you are correctly filling the fields.'
+                        form = CreateDriverForm()
+                        return render(request, 'admin.html', {'data' : data, 'form': form})
+                    
+            else:
+                form = CreateDriverForm()
+                return render(request, 'admin.html', {'form': form})
+        else:
+            return redirect('notfound')
+    else:
+        return redirect('/login')
+    
+
+def not_found(request):
+    return render(request, 'not-found.html')
