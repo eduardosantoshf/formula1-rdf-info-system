@@ -2,9 +2,10 @@
 # @Author: Eduardo Santos
 # @Date:   2023-04-08 17:46:26
 # @Last Modified by:   Eduardo Santos
-# @Last Modified time: 2023-04-09 20:49:26
+# @Last Modified time: 2023-04-11 14:01:18
 
 import json
+import random
 from s4api.graphdb_api import GraphDBApi
 from s4api.swagger import ApiClient
 from pprint import pprint
@@ -140,14 +141,14 @@ def delete_contract(driver, team, season):
         Driver's code
     """
 def create_pilot(forename, surname, nationality, code):
-
-    #TODO: generate id to driver
+    driver_id = hash(random.randint(1, 1000))
     
     query = f"""
     PREFIX driver: <http://f1/driver/pred/>
+    PREFIX id: <http://f1/driver/id/>
 
     INSERT DATA {{
-        _:driver driver:forename "{forename}" ;
+        id:{driver_id} driver:forename "{forename}" ;
                  driver:surname "{surname}" ;
                  driver:nationality "{nationality}" ;
                  driver:code "{code}" .
@@ -162,7 +163,7 @@ def create_pilot(forename, surname, nationality, code):
     )
 
 
-#create_pilot("Santos", "Edu", "Portuguese", "SAN")
+#create_pilot("Santosi", "Edu", "Portuguese", "SAN")
 
 
 """ Create team
@@ -176,13 +177,15 @@ def create_pilot(forename, surname, nationality, code):
     """
 def create_team(name, nationality):
     
-    #TODO: generate id to team
+    team_id = hash(random.randint(1, 1000)) + 1111111
+    print(team_id)
 
     query = f"""
     PREFIX team: <http://f1/team/pred/>
+    PREFIX id: <http://f1/team/id/>
 
     INSERT DATA {{
-        _:team team:name "{name}" ;
+        id:{team_id} team:name "{name}" ;
                  team:nationality "{nationality}" 
     }}
     """
@@ -195,7 +198,7 @@ def create_team(name, nationality):
     )
     print(response)
 
-#create_team("EI", "Portuguese")
+#create_team("EI5", "Portuguese")
 
 
 """ Create contract
@@ -231,7 +234,5 @@ def create_contract(driver, team, season):
     )
     print(response)
 
-a = get_pilot_info("Santos")
-print(a)
-create_contract("1", "214", 2023)
-#create_contract("genid-e61b5268ba1f4122b3f9d8359203b0c917483-driver", "_:genid-e61b5268ba1f4122b3f9d8359203b0c920189-team", 2023)
+
+#create_contract("1", "1111562", 2023)
