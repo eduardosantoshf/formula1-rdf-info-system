@@ -197,6 +197,15 @@ def curiosities(request, season):
 def admin_crud(request):
     if request.user.is_authenticated:
         if request.user.is_superuser:
+            return render(request, 'admin.html')
+        else:
+            return redirect('notfound')
+    else:
+        return redirect('/login')
+    
+def add_driver(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
             data = {}
             if request.method == "POST":
                 form = CreateDriverForm(request.POST)
@@ -207,16 +216,16 @@ def admin_crud(request):
                     if response['status_code'] == 204:
                         data['success'] = 'Successfully added a new driver!'
                         form = CreateDriverForm()
-                        return render(request, 'admin.html', {'data' : data, 'form': form})
+                        return render(request, 'add-driver.html', {'data' : data, 'form': form})
                     
                     else:
                         data['error'] = 'Error creating the driver, make sure you are correctly filling the fields.'
                         form = CreateDriverForm()
-                        return render(request, 'admin.html', {'data' : data, 'form': form})
+                        return render(request, 'add-driver.html', {'data' : data, 'form': form})
                     
             else:
                 form = CreateDriverForm()
-                return render(request, 'admin.html', {'form': form})
+                return render(request, 'add-driver.html', {'form': form})
         else:
             return redirect('notfound')
     else:
