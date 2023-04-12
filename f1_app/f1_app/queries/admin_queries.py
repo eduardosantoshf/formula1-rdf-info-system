@@ -2,7 +2,7 @@
 # @Author: Eduardo Santos
 # @Date:   2023-04-08 17:46:26
 # @Last Modified by:   Eduardo Santos
-# @Last Modified time: 2023-04-11 17:33:03
+# @Last Modified time: 2023-04-12 01:02:25
 
 import json
 import random
@@ -48,7 +48,7 @@ def delete_pilot(driver_code):
     }
     """
 
-    query = query.replace("DRIVER_CODE", driver_code)
+    query = query.replace("DRIVER_CODE", driver_code.upper())
 
     response = requests.post(
         f"{endpoint}/repositories/{repo}/statements",
