@@ -26,7 +26,7 @@ The following libraries were used in the development of the project:
      
      python3 -m pip install -r requirements.txt
 
-2. Initialize *GraphDB*, create a new repository "db" and import the file `f1.nt` present in the `datasets` directory:
+2. Initialize *GraphDB*, create a new repository "db" and import the file `f1.nt` present in the `datasets` directory.
 
 3. Inside the `/f1_app` directory, execute the following command:
 
